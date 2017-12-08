@@ -30,7 +30,8 @@
             android:name=".SignUpActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".Profile"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ClassificationForReceiptActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.frost.expenses;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -334,8 +335,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-
-                finish();
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+//                finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

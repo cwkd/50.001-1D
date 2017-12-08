@@ -4,19 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.frost.expenses.Profile">
+    tools:context="com.example.frost.expenses.ProfileActivity"
+    android:background="#fff8e1">
 
     <Button
+        android:id="@+id/foodButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Food "/>
+        android:onClick="clickGetClassification"
+        android:text="Food "
+        app:layout_constraintBottom_toTopOf="@id/transportButton"
+        app:layout_constraintRight_toRightOf="parent"/>
     <Button
+        android:id="@+id/transportButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Transport"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Food"/>
+        android:text="Transport"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
