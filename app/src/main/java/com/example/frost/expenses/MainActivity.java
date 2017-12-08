@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity
                                 transaction.replace(R.id.content_frame, Expenses.newInstance());
                                 break;
                             case R.id.navigation_log:
-                                transaction.replace(R.id.content_frame, Logger.newInstance());
+                                selectedFragment=new Logger();
+
+                                transaction.replace(R.id.content_frame, Logger.newInstance("mParams1","mParams2"));
                                 break;
                             case R.id.navigation_recommend:
                                 transaction.replace(R.id.content_frame, Recommender.newInstance());
