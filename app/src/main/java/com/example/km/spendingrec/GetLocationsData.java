@@ -14,52 +14,68 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by KM on 8/12/2017.
  */
 
-public class GetLocationsData extends AsyncTask<Object, String, String> {
+public class GetLocationsData extends AsyncTask<Object, String, List<String>> {
 
-    private String googlePlacesData;
+    private List<String> listGooglePlacesData = new ArrayList<>();
     private GoogleMap mMap;
-    String url;
+    private List<String> listofUrl = new ArrayList<>();
+    private List<String> listofMerchants = new ArrayList<>();
+    private List<String> listofPrices = new ArrayList<>();
+    private List<String> listofProducts = new ArrayList<>();
 
     @Override
-    protected String doInBackground(Object... objects) {
+    protected List<String> doInBackground(Object... objects) {
         mMap = (GoogleMap)objects[0];
-        url = (String)objects[1];
+        listofUrl = (List<String>)objects[1];
+        listofMerchants = (List<String>)objects[2];
+        listofPrices = (List<String>)objects[3];
+        listofProducts = (List<String>)objects[4];
 
         DownloadURL downloadURL = new DownloadURL();
         try {
-            googlePlacesData = downloadURL.readUrl(url);
+            for (String url : listofUrl) {
+                String googlePlacesData = downloadURL.readUrl(url);
+                listGooglePlacesData.add(googlePlacesData);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("geolocate data", googlePlacesData);
 
-        return googlePlacesData;
+        return listGooglePlacesData;
     }
 
     @Override
-    protected void onPostExecute(String s) {
-        Log.d("json data", s);
+    protected void onPostExecute(List<String> listOfS) {
+        Log.d("json data", listOfS.toString());
         JSONArray jsonArray = null;
         JSONObject jsonObject;
         try {
-            jsonObject = new JSONObject(s);
-            jsonArray = jsonObject.getJSONArray("results");
-            double lat = Double.parseDouble(jsonArray.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat"));
-            double lng = Double.parseDouble(jsonArray.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng"));
-            String address = jsonArray.getJSONObject(0).getString("formatted_address");
-            LatLng latLng = new LatLng(lat,lng);
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(address);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            for (int i=0; i<listOfS.size(); i++) {
 
-            mMap.addMarker(markerOptions);
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                jsonObject = new JSONObject(listOfS.get(i));
+                jsonArray = jsonObject.getJSONArray("results");
+                double lat = jsonArray.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                double lng = jsonArray.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+                String address = jsonArray.getJSONObject(0).getString("formatted_address");
+                Log.d("formatted address", address);
+                LatLng latLng = new LatLng(lat, lng);
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(listofMerchants.get(i));
+                markerOptions.snippet(listofProducts.get(i) + ": " + listofPrices.get(i));
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                mMap.addMarker(markerOptions);
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

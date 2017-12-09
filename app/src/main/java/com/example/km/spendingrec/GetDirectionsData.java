@@ -6,13 +6,17 @@ import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by KM on 6/12/2017.
@@ -22,8 +26,10 @@ public class GetDirectionsData extends AsyncTask<Object , String, String> {
     GoogleMap mMap;
     String url;
     String googleDirectionsData;
-    String duration,distance;
+    String duration,distance,end_address;
     LatLng latLng;
+    Map<String,String> directionsList = new HashMap<>();
+
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -43,40 +49,34 @@ public class GetDirectionsData extends AsyncTask<Object , String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-//        HashMap<String, String> directionsList = null;
         mMap.clear();
         DataParser parser = new DataParser();
         String[] directionsPolyList = parser.parseDirectionsPolyline(s);
-        HashMap<String,String> directionsList = parser.parseDirections(s);
+        directionsList = parser.parseDirections(s);
+        List<Polyline> singlePolyline = new ArrayList<>();
+
 
         int count = directionsPolyList.length;
         for (int i=0; i<count; i++) {
             PolylineOptions options = new PolylineOptions();
             options.color(Color.RED);
-            options.width(10);
+            options.width(5);
             options.addAll(PolyUtil.decode(directionsPolyList[i]));
-            mMap.addPolyline(options);
+            singlePolyline.add(mMap.addPolyline(options));
         }
+
         duration = directionsList.get("duration");
         distance = directionsList.get("distance");
+        end_address = directionsList.get("end_address");
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.draggable(true);
-        markerOptions.title("Duration = " + duration);
-        markerOptions.snippet("Distance = " + distance);
+        markerOptions.title(end_address);
+        markerOptions.snippet("Duration = " + duration + ", Distance = " + distance);
 
-        mMap.addMarker(markerOptions);
+        Marker destination = mMap.addMarker(markerOptions);
+        destination.showInfoWindow();
 
     }
 
-//    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).snippet(getEndLocationTitle(results)));
-//    }
-
-//    private void addPolyline(DirectionsResult results, GoogleMap mMap) {
-//        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
-//        mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
-//    }
 }

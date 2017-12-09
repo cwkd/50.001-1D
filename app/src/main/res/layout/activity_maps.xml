@@ -2,25 +2,31 @@
 
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor">
 
     <EditText
         android:id="@+id/TF_location"
         android:layout_width="290dp"
         android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:selectAllOnFocus="true"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="What are you looking for?"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <Button
         android:id="@+id/B_search"
-        android:layout_width="100dp"
+        android:layout_width="80dp"
         android:layout_height="45dp"
+        android:layout_margin="10dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/TF_location"
         android:onClick="onClick"
+        android:background="@color/secondaryLightColor"
         android:text="Search" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,38 +34,47 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="530dp"
         tools:context="com.example.km.spendingrec.MapsActivity"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/B_drive" />
+        android:layout_below="@+id/B_search" />
 
 
     <Button
         android:id="@+id/B_drive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/B_search"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/map"
         android:onClick="onClick"
+        android:background="@color/secondaryLightColor"
         android:text="Drive" />
 
     <Button
         android:id="@+id/B_publicTransport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/B_search"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/map"
         android:layout_toEndOf="@+id/B_drive"
         android:onClick="onClick"
+        android:background="@color/secondaryLightColor"
         android:text="Public Transport" />
 
     <Button
         android:id="@+id/B_foot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/B_search"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/map"
         android:layout_toEndOf="@+id/B_publicTransport"
         android:onClick="onClick"
+        android:background="@color/secondaryLightColor"
         android:text="Foot" />
 
 

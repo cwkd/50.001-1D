@@ -1,6 +1,7 @@
 package com.example.km.spendingrec;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -29,6 +30,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +45,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -51,15 +63,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location lastlocation;
     private Marker currentLocationmMarker;
     public static final int REQUEST_LOCATION_CODE = 99;
-    private int PROXIMITY_RADIUS = 3000;        // In meters
     private double latitude,longitude;
     private double end_latitude, end_longitude;
     private String mode_of_transport;
+    private List<Map<String,String>> listOfMaps;
+    private boolean markerClicked;
+    EditText textfield_location;
+
+    private DatabaseReference mDatabase;
+    Map<String, Entry> filteredMap;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        textfield_location =  findViewById(R.id.TF_location);
+        mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl("https://moneywise-a5fef.firebaseio.com/");
+        markerClicked = false;
+        filteredMap = new HashMap<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
@@ -154,89 +177,127 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onClick(View v)
     {
         Object dataTransfer[] = new Object[3];
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         GetDirectionsData getDirectionsData = new GetDirectionsData();
+        GetLocationsData getLocationsData = new GetLocationsData();
         String url = "";
 
         switch(v.getId()) {
 
             case R.id.B_search:
-                EditText textfield_location =  findViewById(R.id.TF_location);
                 mMap.clear();
                 String search = textfield_location.getText().toString();
-                List<JSONObject> jsonObjectList = new ArrayList<>();
-                jsonObjectList = queryUsingSearch(search);
-                getNearbyPlaces(jsonObjectList);
+                getAllEntries();
+                Map<String,List<String>> mapOfDetails = queryUsingSearch(search);
+                getNearbyPlaces(mapOfDetails);
 
+                //TODO: Indicate under the budget
                 Toast.makeText(MapsActivity.this, "Showing Nearby " + search, Toast.LENGTH_SHORT).show();
                 break;
 
-
             case R.id.B_drive:
-                dataTransfer = new Object[3];
-                mode_of_transport = "driving";
+                if (markerClicked) {
+                    dataTransfer = new Object[3];
+                    mode_of_transport = "driving";
 
-                url = getDirectionsUrl();
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = new LatLng(end_latitude,end_longitude);
-                getDirectionsData.execute(dataTransfer);
+                    url = getDirectionsUrl();
+                    dataTransfer[0] = mMap;
+                    dataTransfer[1] = url;
+                    dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+                    getDirectionsData.execute(dataTransfer);
+                }
                 break;
 
             case R.id.B_publicTransport:
-                dataTransfer = new Object[3];
-                mode_of_transport = "transit";
+                if (markerClicked) {
+                    dataTransfer = new Object[3];
+                    mode_of_transport = "transit";
 
-                url = getDirectionsUrl();
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = new LatLng(end_latitude,end_longitude);
-                getDirectionsData.execute(dataTransfer);
+                    url = getDirectionsUrl();
+                    dataTransfer[0] = mMap;
+                    dataTransfer[1] = url;
+                    dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+                    getDirectionsData.execute(dataTransfer);
+                }
                 break;
 
             case R.id.B_foot:
-                dataTransfer = new Object[3];
-                mode_of_transport = "walking";
+                if (markerClicked) {
+                    dataTransfer = new Object[3];
+                    mode_of_transport = "walking";
 
-                url = getDirectionsUrl();
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = new LatLng(end_latitude,end_longitude);
-                getDirectionsData.execute(dataTransfer);
+                    url = getDirectionsUrl();
+                    dataTransfer[0] = mMap;
+                    dataTransfer[1] = url;
+                    dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+                    getDirectionsData.execute(dataTransfer);
+                }
                 break;
         }
     }
 
-    // TODO: query database using keyword of search (e.g. chicken rice)
-    public List<JSONObject> queryUsingSearch(String search) {
-        List<JSONObject> jsonObjectList = new ArrayList<>();
-        String string1 = "{\"address\" : \"1 Kadayanallur St\"}";
-        String string2 = "{\"address\" : \"8 Somapah Rd\"}";
-        try {
-            jsonObjectList.add(new JSONObject(string1));
-            jsonObjectList.add(new JSONObject(string2));
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+    public Map<String, List<String>> queryUsingSearch(String search) {
+        listOfMaps = new ArrayList<>();
+        List<String> listOfAddresses = new ArrayList<>();
+        List<String> listOfMerchants = new ArrayList<>();
+        List<String> listOfPrices = new ArrayList<>();
+        List<String> listOfProducts = new ArrayList<>();
+
+        for (String product : filteredMap.keySet()) {
+
+//            if (filteredMap.get(product).Price <= budget)
+            Map<String, String> filteredResult = new HashMap<>();
+            filteredResult.put("Address", filteredMap.get(product).Address);
+            filteredResult.put("Price", "$"+String.valueOf(filteredMap.get(product).Price));
+            filteredResult.put("Product", product);
+            filteredResult.put("Merchant",filteredMap.get(product).Merchant);
+            listOfMaps.add(filteredResult);
         }
-        return jsonObjectList;
+
+        for (int i=0; i<listOfMaps.size(); i++) {
+            HashMap<String,String> place = (HashMap<String,String>)listOfMaps.get(i);
+            String address = place.get("Address");
+            String merchant = place.get("Merchant");
+            String price = place.get("Price");
+            String product = place.get("Product");
+            listOfAddresses.add(address);
+            listOfMerchants.add(merchant);
+            listOfPrices.add(price);
+            listOfProducts.add(product);
+        }
+        Map<String, List<String>> mapOfDetails = new HashMap<>();
+        mapOfDetails.put("ListOfAddresses", listOfAddresses);
+        mapOfDetails.put("ListOfMerchants", listOfMerchants);
+        mapOfDetails.put("ListOfPrices", listOfPrices);
+        mapOfDetails.put("ListOfProducts", listOfProducts);
+
+        return mapOfDetails;
     }
 
 
-    public void getNearbyPlaces(List<JSONObject> list) {
+    public void getNearbyPlaces(Map<String, List<String>> map) {
         GetLocationsData getLocationsData = new GetLocationsData();
-        Object[] dataTransfer = new Object[3];
-        try {
-            for (JSONObject jsonObject : list) {
-                String address = jsonObject.getString("address");
-                String url = getGeolocateUrl(address);
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                getLocationsData.execute(dataTransfer);
+        Object[] dataTransfer = new Object[5];
+        List<String> listOfUrls = new ArrayList<>();
+        List<String> listOfAddresses = map.get("ListOfAddresses");
+        List<String> listOfMerchants = map.get("ListOfMerchants");
+        List<String> listOfPrices = map.get("ListOfPrices");
+        List<String> listOfProducts = map.get("ListOfProducts");
 
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        for (String address : listOfAddresses) {
+            address = address.replaceAll("\\s+", "+");
+            Log.d("address", address);
+            String url = getGeolocateUrl(address);
+            listOfUrls.add(url);
         }
+
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = listOfUrls;
+        dataTransfer[2] = listOfMerchants;
+        dataTransfer[3] = listOfPrices;
+        dataTransfer[4] = listOfProducts;
+        getLocationsData.execute(dataTransfer);
+
     }
 
     public String getGeolocateUrl(String address) {
@@ -258,20 +319,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    // Given current location, does a nearby search of places of type: 'nearbyPlace'
-    private String getNearbySearchUrl(double latitude , double longitude , String nearbyPlace) {
-
-        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlaceUrl.append("location="+latitude+","+longitude);
-        googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type="+nearbyPlace);
-        googlePlaceUrl.append("&sensor=true");
-        googlePlaceUrl.append("&key="+"AIzaSyBLEPBRfw7sMb73Mr88L91Jqh3tuE4mKsE");
-
-        Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
-
-        return googlePlaceUrl.toString();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -314,9 +361,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        marker.setDraggable(true);
         end_latitude = marker.getPosition().latitude;
         end_longitude = marker.getPosition().longitude;
+        markerClicked = true;
         return false;
     }
 
@@ -335,4 +382,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         end_latitude = marker.getPosition().latitude;
         end_longitude = marker.getPosition().longitude;
     }
+
+
+    //this is the method to get all entries from the database
+    public void getAllEntries(){
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                //Entry newentry = dataSnapshot.getValue(Entry.class);
+                //System.out.println(dataSnapshot.getKey()+" is located at "+newentry.Address);
+
+                //filteredList = new ArrayList();
+                String currentQuery = textfield_location.getText().toString();
+                Map<String, Integer> tempDistHash = new HashMap<>();
+
+                //to store the distances between words in an array
+                //List<Map<String, Integer>> tempDistanceList = new ArrayList();
+                //Log.i("yilong",dataSnapshot.getValue(Entry.class).toString());
+//                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+//                    Log.i("yilong",snapshot.getValue().toString());
+//                }
+
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    Log.i("yilong",String.valueOf(snapshot.getValue(Entry.class)));
+                    Entry eachEntry = snapshot.getValue(Entry.class);
+                    Integer similarity = new LevenshteinDistance().apply(currentQuery, snapshot.getKey());
+                    if (filteredMap.size()<20){
+
+
+                        filteredMap.put(snapshot.getKey(), eachEntry);
+                        tempDistHash.put(snapshot.getKey(), similarity);
+
+                    }
+                    else{
+                        int maxDistance = 0;
+                        String theProduct = "";
+                        for (String eachKey:filteredMap.keySet()){
+                            int currentDiff = tempDistHash.get(eachKey);
+                            if (currentDiff>maxDistance){
+                                maxDistance = currentDiff;
+                                theProduct = eachKey;
+                            }
+                        }
+                        if (similarity<maxDistance){
+                            filteredMap.remove(theProduct);
+                            filteredMap.put(snapshot.getKey(), eachEntry);
+                        }
+
+                    }
+
+
+                }
+                //filteredMap now contains the filtered result from the database
+                //logcat will print out the values of each entry here..
+                for (String eachKey:filteredMap.keySet()){
+                    Log.i("final result",filteredMap.get(eachKey).Merchant);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

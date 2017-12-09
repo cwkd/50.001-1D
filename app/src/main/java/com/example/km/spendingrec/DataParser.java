@@ -14,24 +14,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Priyanka
- */
-
 public class DataParser {
 
     private HashMap<String,String> getDirection(JSONArray googleDirectionsJson) {
         HashMap<String,String> googleDirectionsMap = new HashMap<>();
         String duration = "";
         String distance = "";
+        String destination = "";
 
         Log.d("json response", googleDirectionsJson.toString());
         try {
             duration = googleDirectionsJson.getJSONObject(0).getJSONObject("duration").getString("text");
             distance = googleDirectionsJson.getJSONObject(0).getJSONObject("distance").getString("text");
+            destination = googleDirectionsJson.getJSONObject(0).getString("end_address");
 
             googleDirectionsMap.put("duration",duration);
             googleDirectionsMap.put("distance",distance);
+            googleDirectionsMap.put("end_address",destination);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -125,6 +124,7 @@ public class DataParser {
 
         return getDirection(jsonArray);
     }
+
 
     public String[] parseDirectionsPolyline(String jsonData) {
         JSONArray jsonArray = null;
