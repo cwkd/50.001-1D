@@ -1,7 +1,4 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">AppSkeleton</string>
-=======
     <string name="app_name">Expenses</string>
     <string name="title_profile">My Expenses</string>
     <string name="title_data">Logger</string>
@@ -20,5 +17,4 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email
         completions.</string>
->>>>>>> 4aaa571764e05988a421ea2fe9fad7ab76a3ac0e
 </resources>

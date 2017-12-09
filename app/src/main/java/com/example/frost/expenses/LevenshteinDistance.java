@@ -1,4 +1,4 @@
-package com.example.km.spendingrec;
+package com.example.frost.expenses;
 
 /**
  * Created by YiLong on 7/12/17.
@@ -20,10 +20,11 @@ package com.example.km.spendingrec;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import java.util.Arrays;
+
 //package org.apache.commons.text.similarity;
 
-        import java.util.Arrays;
 
 /**
  * An algorithm for measuring the difference between two character sequences.

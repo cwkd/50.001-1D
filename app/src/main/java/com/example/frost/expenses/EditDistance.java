@@ -1,4 +1,4 @@
-package com.example.km.spendingrec;
+package com.example.frost.expenses;
 
 /**
  * Created by YiLong on 7/12/17.
