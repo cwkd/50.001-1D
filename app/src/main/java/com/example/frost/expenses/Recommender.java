@@ -629,9 +629,9 @@ public class Recommender extends Fragment implements OnMapReadyCallback,
                 }
                 //filteredMap now contains the filtered result from the database
                 //logcat will print out the values of each entry here..
-                for (String eachKey:filteredMap.keySet()){
-                    Log.i("final result",filteredMap.get(eachKey).Merchant);
-                }
+//                for (String eachKey:filteredMap.keySet()){
+//                    Log.i("final result",filteredMap.get(eachKey).Merchant);
+//                }
             }
 
             @Override
