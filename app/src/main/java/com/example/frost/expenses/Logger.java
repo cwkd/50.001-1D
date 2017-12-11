@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +44,7 @@ public class Logger extends Fragment {
     private ImageView ivImage;
     private String userChoosenTask;
     private Bitmap receipt;
+    private JSONObject results;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,6 +70,7 @@ public class Logger extends Fragment {
 
         btnSelect = (Button) view.findViewById(R.id.btnSelectPhoto);
         btnSelect.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 selectImage();
@@ -80,10 +84,12 @@ public class Logger extends Fragment {
             @Override
             public void onClick(View v) {
                 OCR ocr=new OCR(getContext());
-                ocr.gettingReceipt(receipt);
+                results = ocr.gettingReceipt(receipt);
+                Intent intent = new Intent(getActivity(), ClassificationForReceiptActivity.class);
+                intent.putExtra("results", results.toString());
+                startActivity(intent);
             }
         });
-
         return view;
     }
 

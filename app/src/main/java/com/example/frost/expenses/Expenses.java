@@ -102,28 +102,15 @@ public class Expenses extends ListFragment {
         return view;
     }
 
-    public Expenses() {
-
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public static Expenses newInstance() {
-        return new Expenses();
-    }
-
-    public void addDataSet(String[] category, float[] numbers){
+    public void addDataSet(String[] category, float[] numbers) {
         ArrayList<PieEntry> yEntrys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<>();
 
-        for(int i = 0; i < numbers.length; i++){
-            yEntrys.add(new PieEntry(numbers[i] , i));
+        for (int i = 0; i < numbers.length; i++) {
+            yEntrys.add(new PieEntry(numbers[i], i));
         }
 
-        for(int i = 0; i < category.length; i++){
+        for (int i = 0; i < category.length; i++) {
             xEntrys.add(category[i]);
         }
 
@@ -135,10 +122,10 @@ public class Expenses extends ListFragment {
         legend.setForm(Legend.LegendForm.DEFAULT);
 
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(Color.rgb(255,248,225));
-        colors.add(Color.rgb(204,197,175));
-        colors.add(Color.rgb(255,236,179));
-        colors.add(Color.rgb(203,186,131));
+        colors.add(Color.rgb(255, 248, 225));
+        colors.add(Color.rgb(204, 197, 175));
+        colors.add(Color.rgb(255, 236, 179));
+        colors.add(Color.rgb(203, 186, 131));
 
         pieDataSet.setColors(colors);
 
@@ -146,6 +133,10 @@ public class Expenses extends ListFragment {
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
         pieChart.invalidate();
+    }
+
+    public static Expenses newInstance(){
+        return new Expenses();
     }
 
     public interface OnFragmentInteractionListener {

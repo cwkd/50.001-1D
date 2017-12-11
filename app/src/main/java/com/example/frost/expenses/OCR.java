@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,7 +34,7 @@ public class OCR{
         mContext=context;
     }
 
-    public void gettingReceipt(Bitmap bitmap)
+    public JSONObject gettingReceipt(Bitmap bitmap)
 
     {
 
@@ -48,7 +50,7 @@ public class OCR{
 
         mTess = new TessBaseAPI();
         mTess.init(datapath, language);
-        processImage();
+        return processImage();
     }
 
 
@@ -96,7 +98,7 @@ public class OCR{
             }
         }
     }
-    public void processImage(){
+    public JSONObject processImage(){
         Log.i("processImage","processImage");
         String OCRresult = null;
         mTess.setImage(image);
@@ -105,7 +107,6 @@ public class OCR{
         String text=OCRresult.toString();
         text=text.replaceAll("\\n"," ");
         ExtractingEssentialData extraction=new ExtractingEssentialData(text);
-        extraction.ExtractionOfData();
-
+        return extraction.ExtractionOfData();
     }
 }
