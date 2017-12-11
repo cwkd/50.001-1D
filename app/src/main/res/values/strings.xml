@@ -17,4 +17,14 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email
         completions.</string>
+
+    <string name="category_view_default">Category</string>
+    <string name="product_view_default">Product Name</string>
+    <string name="price_view_default">$0.00</string>
+    <string-array name="categories">
+        <item>Food</item>
+        <item>Transport</item>
+        <item>Emergency</item>
+        <item>Misc</item>
+    </string-array>
 </resources>
