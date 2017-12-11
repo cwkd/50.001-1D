@@ -51,7 +51,7 @@
             android:label="@string/title_activity_login" />
         <activity android:name=".StartingActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".ClassificationForReceiptActivity"></activity>
+        <activity android:name=".ClassificationForReceiptActivity" />
     </application>
 
 </manifest>

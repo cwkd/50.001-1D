@@ -23,11 +23,11 @@ import linanalysistools.*;
 public class Expenses extends ListFragment {
 
     float[] dataArray = {};
-    spendingAnalyser analyser =  new spendingAnalyser(300, 1, 31, 4);
+    spendingAnalyser analyser = new spendingAnalyser(300, 1, 31, 4);
     String[] categoryArray = {"Food", "Transportation", "Emergency", "Miscellaneous"};
     spendingAnalyser lastMonthAnalyser;
     spendingAnalyser last2MonthAnalyser;
-    String[] numberArray = {"",  "", "", ""};
+    String[] numberArray = {"", "", "", ""};
     int[] iconArray = {R.drawable.ic_food, R.drawable.ic_transportation, R.drawable.ic_emergency, R.drawable.ic_misc};
     PieChart pieChart;
 
@@ -37,7 +37,7 @@ public class Expenses extends ListFragment {
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         String[] values =
-                {"This Month","Last Month","Last 2 Months"};
+                {"This Month", "Last Month", "Last 2 Months"};
         ArrayAdapter<String> spinnerAdapter =
                 new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, values);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -57,8 +57,8 @@ public class Expenses extends ListFragment {
                         analyser = new spendingAnalyser(300, 1, 31, 4);
                         dataArray = new float[]{(float) analyser.getMonthlyMealPool(), (float) analyser.getMonthlyTransportPool(),
                                 (float) analyser.getMonthlyEmergencyPool(), (float) analyser.getMonthlyMiscPool()};
-                        numberArray = new String[] {Double.toString(analyser.getMonthlyMealPool()), Double.toString(analyser.getMonthlyTransportPool()),
-                            Double.toString(analyser.getMonthlyEmergencyPool()), Double.toString(analyser.getMonthlyMiscPool())};
+                        numberArray = new String[]{Double.toString(analyser.getMonthlyMealPool()), Double.toString(analyser.getMonthlyTransportPool()),
+                                Double.toString(analyser.getMonthlyEmergencyPool()), Double.toString(analyser.getMonthlyMiscPool())};
                         Log.i("Yay", numberArray[0]);
                         addDataSet(categoryArray, dataArray);
                         adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
@@ -68,7 +68,7 @@ public class Expenses extends ListFragment {
                         lastMonthAnalyser = new spendingAnalyser(200, 1, 31, 4);
                         dataArray = new float[]{(float) lastMonthAnalyser.getMonthlyMealPool(), (float) lastMonthAnalyser.getMonthlyTransportPool(),
                                 (float) lastMonthAnalyser.getMonthlyEmergencyPool(), (float) lastMonthAnalyser.getMonthlyMiscPool()};
-                        numberArray = new String[] {Double.toString(lastMonthAnalyser.getMonthlyMealPool()), Double.toString(lastMonthAnalyser.getMonthlyTransportPool()),
+                        numberArray = new String[]{Double.toString(lastMonthAnalyser.getMonthlyMealPool()), Double.toString(lastMonthAnalyser.getMonthlyTransportPool()),
                                 Double.toString(lastMonthAnalyser.getMonthlyEmergencyPool()), Double.toString(lastMonthAnalyser.getMonthlyMiscPool())};
                         Log.i("Yay", numberArray[0]);
                         addDataSet(categoryArray, dataArray);
@@ -79,7 +79,7 @@ public class Expenses extends ListFragment {
                         last2MonthAnalyser = new spendingAnalyser(400, 20, 31, 10);
                         dataArray = new float[]{(float) last2MonthAnalyser.getMonthlyMealPool(), (float) last2MonthAnalyser.getMonthlyTransportPool(),
                                 (float) last2MonthAnalyser.getMonthlyEmergencyPool(), (float) last2MonthAnalyser.getMonthlyMiscPool()};
-                        numberArray = new String[] {Double.toString(last2MonthAnalyser.getMonthlyMealPool()), Double.toString(last2MonthAnalyser.getMonthlyTransportPool()),
+                        numberArray = new String[]{Double.toString(last2MonthAnalyser.getMonthlyMealPool()), Double.toString(last2MonthAnalyser.getMonthlyTransportPool()),
                                 Double.toString(last2MonthAnalyser.getMonthlyEmergencyPool()), Double.toString(last2MonthAnalyser.getMonthlyMiscPool())};
                         Log.i("Yay", numberArray[0]);
                         addDataSet(categoryArray, dataArray);
@@ -92,7 +92,7 @@ public class Expenses extends ListFragment {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 dataArray = new float[]{0, 0, 0, 0};
-                numberArray = new String[] {"", "", "", ""};
+                numberArray = new String[]{"", "", "", ""};
                 CustomListAdapter adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
                 setListAdapter(adapter);
             }
@@ -135,7 +135,7 @@ public class Expenses extends ListFragment {
         pieChart.invalidate();
     }
 
-    public static Expenses newInstance(){
+    public static Expenses newInstance() {
         return new Expenses();
     }
 

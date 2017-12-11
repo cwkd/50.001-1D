@@ -40,6 +40,5 @@
             android:layout_toRightOf="@id/icon"
             android:singleLine="true"
             android:textSize="24sp" />
-
     </LinearLayout>
 </LinearLayout>

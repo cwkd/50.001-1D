@@ -3,6 +3,7 @@
     <string name="title_profile">My Expenses</string>
     <string name="title_data">Logger</string>
     <string name="title_recommend">Recommendations</string>
+    <string name="title">Monthly Budget Remaining</string>
 
     <string name="title_activity_login">Sign in</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -19,7 +20,6 @@
         completions.</string>
 
     <string name="category_view_default">Category</string>
-    <string name="title">Monthly Remaining Budget</string>
     <string name="product_view_default">Product Name</string>
     <string name="price_view_default">$0.00</string>
     <string-array name="categories">
@@ -29,4 +29,3 @@
         <item>Misc</item>
     </string-array>
 </resources>
-
