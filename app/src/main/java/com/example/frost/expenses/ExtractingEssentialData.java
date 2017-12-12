@@ -2,6 +2,11 @@ package com.example.frost.expenses;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -93,6 +98,13 @@ public class ExtractingEssentialData {
 
 //                output=essentialData.toString();
                 Log.i("Done","Done");
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                JsonParser jp = new JsonParser();
+                JsonElement je = jp.parse(essentialData.toString());
+                String prettyJsonString = gson.toJson(je);
+                Log.i("printing", prettyJsonString);
+                pushToDatabase db =new pushToDatabase();
+                db.addToDatabase(essentialData);
                 return essentialData;
             }
             i++;
