@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/1d-app-design.iml" filepath="$PROJECT_DIR$/1d-app-design.iml" />
+      <module fileurl="file://C:\Users\KM\Desktop\AppSkeleton\1d-app-design.iml" filepath="C:\Users\KM\Desktop\AppSkeleton\1d-app-design.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AppSkeleton.iml" filepath="$PROJECT_DIR$/AppSkeleton.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+<<<<<<< HEAD
       <module fileurl="file://C:\Users\cindy\Desktop\1d-app-design\1d-app-design\appDesign.iml" filepath="C:\Users\cindy\Desktop\1d-app-design\1d-app-design\appDesign.iml" />
+=======
+      <module fileurl="file://C:\Users\KM\Desktop\AppSkeleton\appDesign.iml" filepath="C:\Users\KM\Desktop\AppSkeleton\appDesign.iml" />
+>>>>>>> 797cda61cdcd5647c36245e65f72fa4d768f8e14
     </modules>
   </component>
 </project>

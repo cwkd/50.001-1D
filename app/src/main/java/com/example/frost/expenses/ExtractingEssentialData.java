@@ -25,7 +25,7 @@ public class ExtractingEssentialData {
     }
     public JSONObject ExtractionOfData()
     {
-        Log.i("ExtractingEssentialData","ExtractingEssentialData");gi
+        Log.i("ExtractingEssentialData","ExtractingEssentialData");
 
         List<String> myList = new ArrayList<String>(Arrays.asList(this.input.split(" ")));
         int i=0;
