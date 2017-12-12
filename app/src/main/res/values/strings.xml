@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Expenses</string>
     <string name="title_profile">My Expenses</string>
-    <string name="title_data">Logger</string>
+    <string name="title_data">Submit Expenses</string>
     <string name="title_recommend">Recommendations</string>
     <string name="title">Monthly Budget Remaining</string>
 

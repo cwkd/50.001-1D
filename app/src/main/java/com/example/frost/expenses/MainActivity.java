@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements Expenses.OnFragmentInteractionListener,
-                    Logger.OnFragmentInteractionListener,
+                    SubmitReceipt.OnFragmentInteractionListener,
                     Recommender.OnFragmentInteractionListener{
 
     @Override
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
                                 transaction.replace(R.id.content_frame, Expenses.newInstance());
                                 break;
                             case R.id.navigation_log:
-                                transaction.replace(R.id.content_frame, Logger.newInstance());
+                                transaction.replace(R.id.content_frame, SubmitReceipt.newInstance());
                                 break;
                             case R.id.navigation_recommend:
                                 transaction.replace(R.id.content_frame, Recommender.newInstance());
