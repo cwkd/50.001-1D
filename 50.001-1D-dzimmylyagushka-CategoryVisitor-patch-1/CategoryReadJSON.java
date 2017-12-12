@@ -25,15 +25,19 @@ public class CategoryReadJSON {
     private boolean bEmergency;
     private boolean bMiscellaneous;
 
+    private JSONObject object;
 
-    public CategoryReadJSON() throws JSONException {
+
+    public CategoryReadJSON(JSONObject object) throws JSONException {
+        this.object = object;
     }
 
     public boolean bCategory(String category) throws JSONException {
 
         boolean boole = false;
 
-        JSONObject obj = new JSONObject("templatereceipt.json");
+
+        JSONObject obj = this.object;
         String address = obj.getString("address");
 
         Matcher mFood = foodPattern.matcher(address);
@@ -65,7 +69,7 @@ public class CategoryReadJSON {
     public HashMap<String, Double> extractData() throws JSONException {
         HashMap<String, Double> Data = new HashMap<>();
 
-        JSONObject obj = new JSONObject("templatereceipt.json");
+        JSONObject obj = this.object;
         Iterator<?> keys = obj.keys();
 
         while(keys.hasNext()) {
@@ -78,6 +82,5 @@ public class CategoryReadJSON {
         }
         return Data;
     }
-
 
 }

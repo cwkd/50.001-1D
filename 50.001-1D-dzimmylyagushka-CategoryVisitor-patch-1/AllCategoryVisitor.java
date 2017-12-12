@@ -1,6 +1,7 @@
 package expenses;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class AllCategoryVisitor {
 
         ArrayList<Visitable> items = new ArrayList<Visitable>();
         CategoryVisitor postage = new CategoryVisitor();
-        CategoryReadJSON readJSON = new CategoryReadJSON();
+        CategoryReadJSON readJSON = new CategoryReadJSON(new JSONObject());
         AllCategoryVisitor ACV = new AllCategoryVisitor(readJSON.bCategory("food"), readJSON.bCategory("travel"), readJSON.bCategory("emergency"), readJSON.bCategory("miscellaneous"));
 
         HashMap<String, Double> Data = readJSON.extractData();
