@@ -13,8 +13,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.*;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.example.frost.expenses.ExpensesData.*;
+import com.example.frost.expenses.ExpensesDbHelper.*;
 
 import java.util.ArrayList;
 
@@ -99,6 +105,17 @@ public class Expenses extends ListFragment {
             }
 
         });
+
+        pieChart.setOnChartValueSelectedListener( new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.i("Hey", pieChart.getData().getDataSetByIndex((int) e.getX()).toString());
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
         tracker spendingTracker = new tracker();
         return view;
     }
@@ -108,19 +125,22 @@ public class Expenses extends ListFragment {
         ArrayList<String> xEntrys = new ArrayList<>();
 
         for (int i = 0; i < numbers.length; i++) {
-            yEntrys.add(new PieEntry(numbers[i], i));
+            yEntrys.add(new PieEntry(numbers[i], category[i]));
         }
 
         for (int i = 0; i < category.length; i++) {
             xEntrys.add(category[i]);
         }
 
-        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Budget You Have Left Now");
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "");
         pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextSize(16);
+        pieDataSet.setValueTextSize(14);
+        pieDataSet.setColor(Color.BLACK);
 
         Legend legend = pieChart.getLegend();
-        legend.setForm(Legend.LegendForm.DEFAULT);
+        legend.setForm(Legend.LegendForm.CIRCLE);
+        legend.setTextSize(8);
+        legend.setWordWrapEnabled(true);
 
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(Color.rgb(255, 248, 225));
@@ -129,10 +149,18 @@ public class Expenses extends ListFragment {
         colors.add(Color.rgb(203, 186, 131));
 
         pieDataSet.setColors(colors);
+        pieDataSet.setXValuePosition(pieDataSet.getYValuePosition());
 
         //create pie data object
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
+        pieChart.animateXY(2000, 2000);
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setEntryLabelTextSize(8);
+        pieChart.highlightValues(null);
         pieChart.invalidate();
     }
 
