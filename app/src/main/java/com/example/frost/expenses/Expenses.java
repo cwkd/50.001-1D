@@ -1,90 +1,145 @@
 package com.example.frost.expenses;
 
-import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
+import com.github.mikephil.charting.charts.*;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.*;
 
-import linanalysistools.spendingAnalyser;
+import java.util.ArrayList;
 
+import linanalysistools.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Expenses.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Expenses#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Expenses extends Fragment {
+public class Expenses extends ListFragment {
 
-    private OnFragmentInteractionListener mListener;
-    private ListView listView;
-    //private PieChart pieChart;
+    float[] dataArray = {};
+    spendingAnalyser analyser = new spendingAnalyser(300, 1, 31, 4);
+    String[] categoryArray = {"Food", "Transportation", "Emergency", "Miscellaneous"};
+    spendingAnalyser lastMonthAnalyser;
+    spendingAnalyser last2MonthAnalyser;
+    String[] numberArray = {"", "", "", ""};
+    int[] iconArray = {R.drawable.ic_food, R.drawable.ic_transportation, R.drawable.ic_emergency, R.drawable.ic_misc};
+    PieChart pieChart;
 
-    public Expenses() {
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+        String[] values =
+                {"This Month", "Last Month", "Last 2 Months"};
+        ArrayAdapter<String> spinnerAdapter =
+                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, values);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(spinnerAdapter);
+        pieChart = (PieChart) view.findViewById(R.id.chart);
+        pieChart.setRotationEnabled(true);
+        pieChart.setHoleRadius(20f);
+        pieChart.setCenterTextSize(20);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View selectedItemView, int position, long id) {
+                String selection = spinner.getSelectedItem().toString().trim();
+                Log.i("Selection", selection);
+                CustomListAdapter adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
+                switch (selection) {
+                    case "This Month":
+                        // TODO: Change the analyser to "real" history analyser instead of hard code, add the prompt for users to set their monthly budget
+                        analyser = new spendingAnalyser(300, 1, 31, 4);
+                        dataArray = new float[]{(float) analyser.getMonthlyMealPool(), (float) analyser.getMonthlyTransportPool(),
+                                (float) analyser.getMonthlyEmergencyPool(), (float) analyser.getMonthlyMiscPool()};
+                        numberArray = new String[]{Double.toString(analyser.getMonthlyMealPool()), Double.toString(analyser.getMonthlyTransportPool()),
+                                Double.toString(analyser.getMonthlyEmergencyPool()), Double.toString(analyser.getMonthlyMiscPool())};
+                        Log.i("Yay", numberArray[0]);
+                        addDataSet(categoryArray, dataArray);
+                        adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
+                        setListAdapter(adapter);
+                        break;
+                    case "Last Month":
+                        lastMonthAnalyser = new spendingAnalyser(200, 1, 31, 4);
+                        dataArray = new float[]{(float) lastMonthAnalyser.getMonthlyMealPool(), (float) lastMonthAnalyser.getMonthlyTransportPool(),
+                                (float) lastMonthAnalyser.getMonthlyEmergencyPool(), (float) lastMonthAnalyser.getMonthlyMiscPool()};
+                        numberArray = new String[]{Double.toString(lastMonthAnalyser.getMonthlyMealPool()), Double.toString(lastMonthAnalyser.getMonthlyTransportPool()),
+                                Double.toString(lastMonthAnalyser.getMonthlyEmergencyPool()), Double.toString(lastMonthAnalyser.getMonthlyMiscPool())};
+                        Log.i("Yay", numberArray[0]);
+                        addDataSet(categoryArray, dataArray);
+                        adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
+                        setListAdapter(adapter);
+                        break;
+                    case "Last 2 Months":
+                        last2MonthAnalyser = new spendingAnalyser(400, 20, 31, 10);
+                        dataArray = new float[]{(float) last2MonthAnalyser.getMonthlyMealPool(), (float) last2MonthAnalyser.getMonthlyTransportPool(),
+                                (float) last2MonthAnalyser.getMonthlyEmergencyPool(), (float) last2MonthAnalyser.getMonthlyMiscPool()};
+                        numberArray = new String[]{Double.toString(last2MonthAnalyser.getMonthlyMealPool()), Double.toString(last2MonthAnalyser.getMonthlyTransportPool()),
+                                Double.toString(last2MonthAnalyser.getMonthlyEmergencyPool()), Double.toString(last2MonthAnalyser.getMonthlyMiscPool())};
+                        Log.i("Yay", numberArray[0]);
+                        addDataSet(categoryArray, dataArray);
+                        adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
+                        setListAdapter(adapter);
+                        break;
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                dataArray = new float[]{0, 0, 0, 0};
+                numberArray = new String[]{"", "", "", ""};
+                CustomListAdapter adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
+                setListAdapter(adapter);
+            }
+
+        });
+        tracker spendingTracker = new tracker();
+        return view;
+    }
+
+    public void addDataSet(String[] category, float[] numbers) {
+        ArrayList<PieEntry> yEntrys = new ArrayList<>();
+        ArrayList<String> xEntrys = new ArrayList<>();
+
+        for (int i = 0; i < numbers.length; i++) {
+            yEntrys.add(new PieEntry(numbers[i], i));
+        }
+
+        for (int i = 0; i < category.length; i++) {
+            xEntrys.add(category[i]);
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Budget You Have Left Now");
+        pieDataSet.setSliceSpace(2);
+        pieDataSet.setValueTextSize(16);
+
+        Legend legend = pieChart.getLegend();
+        legend.setForm(Legend.LegendForm.DEFAULT);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(Color.rgb(255, 248, 225));
+        colors.add(Color.rgb(204, 197, 175));
+        colors.add(Color.rgb(255, 236, 179));
+        colors.add(Color.rgb(203, 186, 131));
+
+        pieDataSet.setColors(colors);
+
+        //create pie data object
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
     }
 
     public static Expenses newInstance() {
         return new Expenses();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        spendingAnalyser spendAnalyse = new spendingAnalyser(100, 1, 1, 1);
-        listView = (ListView) getActivity().findViewById(R.id.Frag_list);
-        //LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_expenses, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

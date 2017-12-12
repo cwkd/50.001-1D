@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment selectedFragment = null;
                         FragmentTransaction transaction = getSupportFragmentManager().
                                 beginTransaction();
                         switch (item.getItemId()) {
@@ -33,9 +32,7 @@ public class MainActivity extends AppCompatActivity
                                 transaction.replace(R.id.content_frame, Expenses.newInstance());
                                 break;
                             case R.id.navigation_log:
-                                selectedFragment=new Logger();
-
-                                transaction.replace(R.id.content_frame, Logger.newInstance("mParams1","mParams2"));
+                                transaction.replace(R.id.content_frame, Logger.newInstance());
                                 break;
                             case R.id.navigation_recommend:
                                 transaction.replace(R.id.content_frame, Recommender.newInstance());
