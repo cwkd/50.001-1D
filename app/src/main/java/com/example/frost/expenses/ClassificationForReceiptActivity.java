@@ -1,4 +1,3 @@
-
 package com.example.frost.expenses;
 
 import android.app.FragmentManager;
@@ -79,4 +78,3 @@ public class ClassificationForReceiptActivity extends AppCompatActivity implemen
         dialog.show(fm, "ReclassifyDialog");
     }
 }
-
