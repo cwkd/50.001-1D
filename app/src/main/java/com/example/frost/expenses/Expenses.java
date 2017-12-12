@@ -54,6 +54,7 @@ public class Expenses extends ListFragment {
                 CustomListAdapter adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
                 switch (selection) {
                     case "This Month":
+                        // TODO: Change the analyser to "real" history analyser instead of hard code, add the prompt for users to set their monthly budget
                         analyser = new spendingAnalyser(300, 1, 31, 4);
                         dataArray = new float[]{(float) analyser.getMonthlyMealPool(), (float) analyser.getMonthlyTransportPool(),
                                 (float) analyser.getMonthlyEmergencyPool(), (float) analyser.getMonthlyMiscPool()};
