@@ -1,4 +1,4 @@
-package expenses;
+package com.example.frost.expenses;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +38,7 @@ public class CategoryReadJSON {
 
 
         JSONObject obj = this.object;
-        String address = obj.getString("address");
+        String address = obj.getString("Address");
 
         Matcher mFood = foodPattern.matcher(address);
         Matcher mTravel = travelPattern.matcher(address);
@@ -74,9 +74,10 @@ public class CategoryReadJSON {
 
         while(keys.hasNext()) {
             String key = (String) keys.next();
-            if (key.equals("address")) {
+            if (key.equals("Address")) {
             } else {
-                Double keyvalue = (Double) obj.get(key);
+                String keyval = (String) obj.get(key);
+                Double keyvalue = Double.parseDouble(keyval.replace("$", ""));
                 Data.put(key, keyvalue);
             }
         }

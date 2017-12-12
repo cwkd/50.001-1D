@@ -1,4 +1,4 @@
-package expenses;
+package com.example.frost.expenses;
 
 public interface Visitor {
     void visit(Food f);

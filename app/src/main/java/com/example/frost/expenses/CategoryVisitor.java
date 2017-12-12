@@ -1,4 +1,4 @@
-package expenses;
+package com.example.frost.expenses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * Created by John on 8/12/2017.
  */
 
-public class CategoryVisitor implements Visitor{
+public class CategoryVisitor implements Visitor {
 
     private double totalSpending;
     private List<String> productList = new ArrayList<String>();

@@ -1,4 +1,4 @@
-package expenses;
+package com.example.frost.expenses;
 
 import org.json.JSONException;
 import org.json.JSONObject;

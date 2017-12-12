@@ -1,4 +1,4 @@
-package expenses;
+package com.example.frost.expenses;
 
 /**
  * Created by John on 8/12/2017.
