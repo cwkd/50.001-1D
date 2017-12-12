@@ -42,6 +42,9 @@ public class ExtractingEssentialData {
                 {
                     try{
                         essentialData.put("Address",output.toString());
+                        //essentialData.put("Merchant","Merchant");
+                        //essentialData.put("Date","20/10/20");
+                        //essentialData.put("Time","6pm");
                     }
                     catch (Exception ex)
                     {
