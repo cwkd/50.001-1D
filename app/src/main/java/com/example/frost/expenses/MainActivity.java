@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
                                 beginTransaction();
                         switch (item.getItemId()) {
                             case R.id.navigation_profile:
-                                transaction.replace(R.id.content_frame, expensesFragment);
+                                transaction.replace(R.id.content_frame, Expenses.newInstance());
                                 break;
                             case R.id.navigation_log:
                                 transaction.replace(R.id.content_frame, SubmitReceipt.newInstance());
