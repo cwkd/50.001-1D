@@ -22,6 +22,7 @@
     <string name="category_view_default">Category</string>
     <string name="product_view_default">Product Name</string>
     <string name="price_view_default">$0.00</string>
+    <string name="accept_button_default">Accept</string>
     <string-array name="categories">
         <item>Food</item>
         <item>Transport</item>

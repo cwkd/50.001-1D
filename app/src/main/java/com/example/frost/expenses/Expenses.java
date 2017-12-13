@@ -3,6 +3,7 @@ package com.example.frost.expenses;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import linanalysistools.*;
 
 public class Expenses extends ListFragment {
 
+    public static final String CURRENT = "current";
+
     float[] dataArray = {};
     spendingAnalyser analyser = new spendingAnalyser(300, 1, 31, 4);
     String[] categoryArray = {"Food", "Transportation", "Emergency", "Miscellaneous"};
@@ -38,9 +41,30 @@ public class Expenses extends ListFragment {
     PieChart pieChart;
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CURRENT, analyser);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            analyser = savedInstanceState.getParcelable(CURRENT);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+                             ViewGroup container, final Bundle savedInstanceState) {
+
+        final View view = inflater.inflate(R.layout.fragment_expenses, container, false);
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         String[] values =
                 {"This Month", "Last Month", "Last 2 Months"};
@@ -49,7 +73,7 @@ public class Expenses extends ListFragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spinnerAdapter);
         pieChart = (PieChart) view.findViewById(R.id.chart);
-        pieChart.setRotationEnabled(true);
+        pieChart.setRotationEnabled(true); 
         pieChart.setHoleRadius(20f);
         pieChart.setCenterTextSize(20);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -61,7 +85,11 @@ public class Expenses extends ListFragment {
                 switch (selection) {
                     case "This Month":
                         // TODO: Change the analyser to "real" history analyser instead of hard code, add the prompt for users to set their monthly budget
-                        analyser = new spendingAnalyser(300, 1, 31, 4);
+                        if (savedInstanceState != null) {
+                            analyser = savedInstanceState.getParcelable(CURRENT);
+                        } else {
+                            analyser = new spendingAnalyser(300, 1, 31, 4);
+                        }
                         dataArray = new float[]{(float) analyser.getMonthlyMealPool(), (float) analyser.getMonthlyTransportPool(),
                                 (float) analyser.getMonthlyEmergencyPool(), (float) analyser.getMonthlyMiscPool()};
                         numberArray = new String[]{Double.toString(analyser.getMonthlyMealPool()), Double.toString(analyser.getMonthlyTransportPool()),
@@ -119,6 +147,7 @@ public class Expenses extends ListFragment {
         tracker spendingTracker = new tracker();
         return view;
     }
+
 
     public void addDataSet(String[] category, float[] numbers) {
         ArrayList<PieEntry> yEntrys = new ArrayList<>();
