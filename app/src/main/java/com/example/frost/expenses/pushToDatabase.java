@@ -1,5 +1,7 @@
 package com.example.frost.expenses;
 
+import android.util.Log;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -41,6 +43,7 @@ public class pushToDatabase {
         }
         catch(Exception ex){
             ex.printStackTrace();
+            Log.i("heegege","hello");
         }
     }
 }

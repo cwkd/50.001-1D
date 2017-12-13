@@ -46,7 +46,14 @@ public class ExtractingEssentialData {
                 if(m.matches())
                 {
                     try{
-                        essentialData.put("Address",output.toString());
+                        String test = "The First American's style";
+                        Log.i("old text::",test);
+                        test = test.replaceAll("'","");
+                        Log.i("new text::",test);
+                        String str = output.toString().replaceAll("'", "");
+                        essentialData.put("Address",str);
+                        Log.i("address", str);
+                        Log.i("ff","#0`1-`10");
                         //essentialData.put("Merchant","Merchant");
                         //essentialData.put("Date","20/10/20");
                         //essentialData.put("Time","6pm");
