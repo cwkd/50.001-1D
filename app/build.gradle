@@ -26,7 +26,11 @@ android {
         implementation 'com.android.support.constraint:constraint-layout:1.0.2'
         implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
         implementation 'com.android.support:recyclerview-v7:26.1.0'
+<<<<<<< HEAD
         implementation 'com.google.firebase:firebase-database:11.6.2'
+=======
+
+>>>>>>> 94342e63c958befac9062eeeae4a4cefa47bce5b
         implementation 'com.google.android.gms:play-services-maps:11.6.2'
         implementation 'com.google.android.gms:play-services-location:11.6.2'
         compile 'com.google.maps.android:android-maps-utils:0.5+'

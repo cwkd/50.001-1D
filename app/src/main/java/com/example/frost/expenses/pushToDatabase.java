@@ -7,6 +7,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
+import java.util.Iterator;
+import java.util.Objects;
+
 
 /**
  * Created by cindy on 13/12/2017.
@@ -16,7 +19,7 @@ public class pushToDatabase {
 
     String firebaseURL = "https://moneywise-a5fef.firebaseio.com/";
 
-    public void addToDatabase(JSONObject jsonObject)
+    public void addToDatabase(JSONObject myjson)
     {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl(firebaseURL);
 
@@ -27,17 +30,23 @@ public class pushToDatabase {
         Entry newEntry;
 
         try{
-            address = jsonObject.getString("Address");
+            address = myjson.getString("Address");
+            //Log.i("yilong",address);
+            Iterator<String> iter = myjson.keys();
+            while(iter.hasNext()){
+                String key = iter.next();
+                //if (!Objects.equals(jsonObject.keys().next(), "Address")){
+                if (!key.equals("Address")){
 
-            while(jsonObject.keys().hasNext()){
-                if (jsonObject.keys().next()!="Address"){
-                    product = jsonObject.keys().next();
+                    product = key;
                     //used substring to remove the $ sign
-                    price = Double.parseDouble(jsonObject.getString(jsonObject.keys().next()).substring(1));
+                    price = Double.parseDouble(myjson.getString(product).substring(1));
                     quantity = 1;
 
-                    newEntry = new Entry("null",address, "null","null",price,quantity);
+                    newEntry = new Entry(product,address, "null","null",price,quantity);
                     mDatabase.child(product).setValue(newEntry);
+                    //Log.i("yilong",product);
+                    //Log.i("yilong",String.valueOf(price) );
                 }
             }
         }
