@@ -3,6 +3,7 @@ package com.example.frost.expenses;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +14,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.*;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.example.frost.expenses.ExpensesData.*;
+import com.example.frost.expenses.ExpensesDbHelper.*;
 
 import java.util.ArrayList;
 
 import linanalysistools.*;
 
 public class Expenses extends ListFragment {
+
+    public static final String CURRENT = "current";
 
     float[] dataArray = {};
     spendingAnalyser analyser = new spendingAnalyser(300, 1, 31, 4);
@@ -32,9 +41,30 @@ public class Expenses extends ListFragment {
     PieChart pieChart;
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CURRENT, analyser);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            analyser = savedInstanceState.getParcelable(CURRENT);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+                             ViewGroup container, final Bundle savedInstanceState) {
+
+        final View view = inflater.inflate(R.layout.fragment_expenses, container, false);
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         String[] values =
                 {"This Month", "Last Month", "Last 2 Months"};
@@ -43,7 +73,7 @@ public class Expenses extends ListFragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spinnerAdapter);
         pieChart = (PieChart) view.findViewById(R.id.chart);
-        pieChart.setRotationEnabled(true);
+        pieChart.setRotationEnabled(true); 
         pieChart.setHoleRadius(20f);
         pieChart.setCenterTextSize(20);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -54,7 +84,12 @@ public class Expenses extends ListFragment {
                 CustomListAdapter adapter = new CustomListAdapter(getActivity(), categoryArray, numberArray, iconArray);
                 switch (selection) {
                     case "This Month":
-                        analyser = new spendingAnalyser(300, 1, 31, 4);
+                        // TODO: Change the analyser to "real" history analyser instead of hard code, add the prompt for users to set their monthly budget
+                        if (savedInstanceState != null) {
+                            analyser = savedInstanceState.getParcelable(CURRENT);
+                        } else {
+                            analyser = new spendingAnalyser(300, 1, 31, 4);
+                        }
                         dataArray = new float[]{(float) analyser.getMonthlyMealPool(), (float) analyser.getMonthlyTransportPool(),
                                 (float) analyser.getMonthlyEmergencyPool(), (float) analyser.getMonthlyMiscPool()};
                         numberArray = new String[]{Double.toString(analyser.getMonthlyMealPool()), Double.toString(analyser.getMonthlyTransportPool()),
@@ -98,28 +133,43 @@ public class Expenses extends ListFragment {
             }
 
         });
+
+        pieChart.setOnChartValueSelectedListener( new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.i("Hey", pieChart.getData().getDataSetByIndex((int) e.getX()).toString());
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
         tracker spendingTracker = new tracker();
         return view;
     }
+
 
     public void addDataSet(String[] category, float[] numbers) {
         ArrayList<PieEntry> yEntrys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<>();
 
         for (int i = 0; i < numbers.length; i++) {
-            yEntrys.add(new PieEntry(numbers[i], i));
+            yEntrys.add(new PieEntry(numbers[i], category[i]));
         }
 
         for (int i = 0; i < category.length; i++) {
             xEntrys.add(category[i]);
         }
 
-        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Budget You Have Left Now");
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "");
         pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextSize(16);
+        pieDataSet.setValueTextSize(14);
+        pieDataSet.setColor(Color.BLACK);
 
         Legend legend = pieChart.getLegend();
-        legend.setForm(Legend.LegendForm.DEFAULT);
+        legend.setForm(Legend.LegendForm.CIRCLE);
+        legend.setTextSize(8);
+        legend.setWordWrapEnabled(true);
 
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(Color.rgb(255, 248, 225));
@@ -128,10 +178,18 @@ public class Expenses extends ListFragment {
         colors.add(Color.rgb(203, 186, 131));
 
         pieDataSet.setColors(colors);
+        pieDataSet.setXValuePosition(pieDataSet.getYValuePosition());
 
         //create pie data object
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
+        pieChart.animateXY(2000, 2000);
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setEntryLabelTextSize(8);
+        pieChart.highlightValues(null);
         pieChart.invalidate();
     }
 

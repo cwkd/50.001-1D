@@ -1,4 +1,3 @@
-
 package com.example.frost.expenses;
 
 import android.app.FragmentManager;
@@ -7,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,7 +14,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Created by Daniel on 11/12/2017.
+ */
 
 public class ClassificationForReceiptActivity extends AppCompatActivity implements ReclassifyDialogFragment.ReclassifyDialogListener {
 
@@ -39,7 +45,43 @@ public class ClassificationForReceiptActivity extends AppCompatActivity implemen
         }
         if (results != null) {
             mDataset = new ArrayList<>();
+            ArrayList<Visitable> items = new ArrayList<Visitable>();
+            CategoryVisitor postage = new CategoryVisitor();
+            try {
+                CategoryReadJSON readJSON = new CategoryReadJSON(results);
+                AllCategoryVisitor ACV = new AllCategoryVisitor(readJSON.bCategory("food"), readJSON.bCategory("travel"), readJSON.bCategory("emergency"), readJSON.bCategory("miscellaneous"));
+
+                HashMap<String, Double> Data = readJSON.extractData();
+                int category = ACV.getRecommendedCategory();
+
+                for (Map.Entry<String, Double> data : Data.entrySet()) {
+                    String productName = data.getKey();
+                    Double productPrice = data.getValue();
+                    switch (category) {
+                        case 1:
+                            items.add(new Food(productName, productPrice));
+                        case 2:
+                            items.add(new Travel(productName, productPrice));
+                        case 3:
+                            items.add(new Emergency(productName, productPrice));
+                        case 4:
+                            items.add(new Miscellaneous(productName, productPrice));
+                    }
+                }
+
+                for (Visitable o : items) {
+                    o.accept(postage);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayList<String> cat = (ArrayList<String>) postage.getProductList();
+            Iterator<String> categories = cat.iterator();
+            while (categories.hasNext()) {
+                Log.d("Cat", categories.next());
+            }
             Iterator<String> iter = results.keys();
+            Log.d("Cat", "Done");
             while (iter.hasNext()) {
                 String product = iter.next();
                 if (!product.equals("Address")) {
@@ -79,4 +121,3 @@ public class ClassificationForReceiptActivity extends AppCompatActivity implemen
         dialog.show(fm, "ReclassifyDialog");
     }
 }
-

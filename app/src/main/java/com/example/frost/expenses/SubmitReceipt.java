@@ -31,12 +31,12 @@ import java.io.IOException;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Logger.OnFragmentInteractionListener} interface
+ * {@link SubmitReceipt.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Logger#newInstance} factory method to
+ * Use the {@link SubmitReceipt#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Logger extends Fragment {
+public class SubmitReceipt extends Fragment {
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
@@ -48,19 +48,18 @@ public class Logger extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Logger() {
+    public SubmitReceipt() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static Logger newInstance() {
-        return new Logger();
+    public static SubmitReceipt newInstance() {
+        return new SubmitReceipt();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

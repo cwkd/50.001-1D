@@ -1,6 +1,13 @@
 package linanalysistools;
 
-public class spendingAnalyser {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Created by Daniel on 11/12/2017.
+ */
+
+public class spendingAnalyser implements Parcelable{
 
     private double startingBudget;
     private int daysInMonth;
@@ -522,5 +529,116 @@ public class spendingAnalyser {
                 recommendation = 0;
         }
         return recommendation;
+    }
+
+    /**
+     * Required method for Parcelable
+     */
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public spendingAnalyser createFromParcel(Parcel in) {
+            return new spendingAnalyser(in);
+        }
+
+        public spendingAnalyser[] newArray(int size) {
+            return new spendingAnalyser[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Constructor for retrieving object from bundle
+     * @param in
+     */
+    public spendingAnalyser(Parcel in) {
+        this.startingBudget = in.readDouble();
+        this.daysInMonth = in.readInt();
+        this.dayOfMonth = in.readInt();
+        this.currentMeal = in.readInt();
+
+        this.mealRecords = new double[daysInMonth][];
+        for (int i = 0; i < daysInMonth;i++) {
+            in.readDoubleArray(this.mealRecords[i]);
+        }
+        this.transportRecords = new double[daysInMonth][];
+        for (int i = 0; i < daysInMonth;i++) {
+            in.readDoubleArray(this.transportRecords[i]);
+        }
+        this.monthlyMealAlloc = in.readDouble();
+        this.monthlyTransportAlloc = in.readDouble();
+        this.monthlyEmergencyAlloc = in.readDouble();
+        this.monthlyMiscAlloc = in.readDouble();
+
+        this.monthlyMealPool = in.readDouble();
+        this.monthlyTransportPool = in.readDouble();
+        this.monthlyEmergencyPool = in.readDouble();
+        this.monthlyMiscPool = in.readDouble();
+
+        this.monthlyMealOverdraft = in.readDouble();
+        this.monthlyTransportOverdraft = in.readDouble();
+        this.monthlyEmergencyOverdraft = in.readDouble();
+        this.monthlyMiscOverdraft = in.readDouble();
+
+        this.dailyMealAlloc = in.readDouble();
+        this.dailyTransportAlloc = in.readDouble();
+        this.dailyMealPool = in.readDouble();
+        this.dailyTransportPool = in.readDouble();
+
+        this.dailyMealOverdraft = in.readDouble();
+        this.dailyTransportOverdraft = in.readDouble();
+
+        this.monthlyBreakfastExp = in.readDouble();
+        this.monthlyLunchExp = in.readDouble();
+        this.monthlyDinnerExp = in.readDouble();
+        this.monthlyExtraMealExp = in.readDouble();
+        this.monthlyTransportExp = in.readDouble();
+    }
+
+    /**
+     * Method to write to parcel, allows object instance to be passed through bundle
+     * @param parcel
+     * @param i
+     */
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(this.startingBudget);
+        parcel.writeInt(this.daysInMonth);
+        parcel.writeInt(this.dayOfMonth);
+        parcel.writeInt(this.currentMeal);
+
+        for (double[] day: this.mealRecords) {
+            parcel.writeDoubleArray(day);
+        }
+        for (double[] day: this.transportRecords) {
+            parcel.writeDoubleArray(day);
+        }
+
+        parcel.writeDouble(this.monthlyMealAlloc);
+        parcel.writeDouble(this.monthlyTransportAlloc);
+        parcel.writeDouble(this.monthlyEmergencyAlloc);
+        parcel.writeDouble(this.monthlyMiscAlloc);
+        parcel.writeDouble(this.monthlyMealPool);
+        parcel.writeDouble(this.monthlyTransportPool);
+        parcel.writeDouble(this.monthlyEmergencyPool);
+        parcel.writeDouble(this.monthlyMiscPool);
+        parcel.writeDouble(this.monthlyMealOverdraft);
+        parcel.writeDouble(this.monthlyTransportOverdraft);
+        parcel.writeDouble(this.monthlyMiscOverdraft);
+
+        parcel.writeDouble(this.dailyMealAlloc);
+        parcel.writeDouble(this.dailyTransportAlloc);
+        parcel.writeDouble(this.dailyMealPool);
+        parcel.writeDouble(this.dailyTransportPool);
+        parcel.writeDouble(this.dailyMealOverdraft);
+        parcel.writeDouble(this.dailyTransportOverdraft);
+
+        parcel.writeDouble(this.monthlyBreakfastExp);
+        parcel.writeDouble(this.monthlyLunchExp);
+        parcel.writeDouble(this.monthlyDinnerExp);
+        parcel.writeDouble(this.monthlyExtraMealExp);
+        parcel.writeDouble(this.monthlyTransportExp);
     }
 }

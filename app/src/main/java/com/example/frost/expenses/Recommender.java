@@ -67,12 +67,12 @@ public class Recommender extends Fragment implements OnMapReadyCallback,
         LocationListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMarkerDragListener {
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
 
@@ -103,7 +103,6 @@ public class Recommender extends Fragment implements OnMapReadyCallback,
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static Recommender newInstance() {
         return new Recommender();
     }
@@ -113,9 +112,6 @@ public class Recommender extends Fragment implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-//
-//        mapFragment.getMapAsync(this);
 
     }
 
@@ -262,28 +258,6 @@ public class Recommender extends Fragment implements OnMapReadyCallback,
     }
 
 
-
-
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_maps);
-//        textfield_location =  findViewById(R.id.TF_location);
-//        mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl("https://moneywise-a5fef.firebaseio.com/");
-//        markerClicked = false;
-//        filteredMap = new HashMap<>();
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//        {
-//            checkLocationPermission();
-//
-//        }
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

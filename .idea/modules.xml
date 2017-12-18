@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/50.001-1D-dzimmylyagushka-CategoryVisitor-patch-1.iml" filepath="$PROJECT_DIR$/.idea/50.001-1D-dzimmylyagushka-CategoryVisitor-patch-1.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/50.001-1D-appSkeleton.iml" filepath="$PROJECT_DIR$/50.001-1D-appSkeleton.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
->>>>>>> 8cf800484add8307871d4e3ed8ca5a187993da15
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appDesign.iml" filepath="$PROJECT_DIR$/appDesign.iml" />
     </modules>
   </component>
 </project>
