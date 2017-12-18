@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
 <<<<<<< HEAD
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="true" />
+=======
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
 =======
   <component name="NullableNotNullManager">
@@ -53,4 +56,5 @@
   </component>
 =======
 >>>>>>> 4aaa571764e05988a421ea2fe9fad7ab76a3ac0e
+>>>>>>> 8cf800484add8307871d4e3ed8ca5a187993da15
 </project>
