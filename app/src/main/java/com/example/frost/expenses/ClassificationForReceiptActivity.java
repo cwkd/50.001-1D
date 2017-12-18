@@ -86,9 +86,11 @@ public class ClassificationForReceiptActivity extends AppCompatActivity implemen
                 String product = iter.next();
                 if (!product.equals("Address")) {
                     try {
-                        Item item = new Item("ItemCat", product, String.valueOf(results.get(product).toString()));
+                        Item item = new Item((categories.hasNext()) ? categories.next() : "ItemCat", product, String.valueOf(results.get(product).toString()));
                         mDataset.add(item);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
